@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Sign Up - WipeSure</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    body {
+      background: #121212;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      font-family: Arial, sans-serif;
+      color: white;
+    }
+    .signup-box {
+      background: #1e1e1e;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.5);
+      text-align: center;
+      width: 300px;
+    }
+    .signup-box h2 {
+      margin-bottom: 20px;
+      color: #00ff80;
+    }
+    .signup-box input {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 5px;
+    }
+    .signup-box button {
+      width: 100%;
+      padding: 10px;
+      background: #00ff80;
+      border: none;
+      border-radius: 5px;
+      color: black;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .error { color: red; margin-top: 10px; }
+    .link { margin-top: 15px; }
+  </style>
+</head>
+<body>
+  <div class="signup-box">
+    <h2>Create Account</h2>
+    <form id="signupForm">
+      <input type="text" id="firstName" placeholder="First Name" required>
+      <input type="text" id="lastName" placeholder="Last Name" required>
+      <input type="email" id="email" placeholder="Email Address" required>
+      <input type="password" id="password" placeholder="Password (min. 8 characters)" required>
+      <button type="submit">Sign Up</button>
+    </form>
+    <p id="error" class="error"></p>
+    <p class="link">Already have an account? <a href="login.html">Login</a></p>
+  </div>
+
+  <script>
+    document.getElementById("signupForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const firstName = document.getElementById("firstName").value;
+      const lastName = document.getElementById("lastName").value;
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+
+      try {
+        const res = await fetch("/api/auth/signup", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ firstName, lastName, email, password })
+        });
+
+        const data = await res.json();
+        if (res.ok) {
+          // Signup successful, redirect to main app
+          window.location.href = "/";
+        } else {
+          document.getElementById("error").innerText = data.error || "Signup failed.";
+        }
+      } catch (err) {
+        document.getElementById("error").innerText = "Network error. Please try again.";
+      }
+    });
+  </script>
+</body>
+</html>
